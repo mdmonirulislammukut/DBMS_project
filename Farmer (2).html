@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shobji Vander - Farmer Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .system-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .farmer-info {
+            text-align: right;
+        }
+
+        .farmer-info .farmer-id {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .farmer-info .farmer-name {
+            font-weight: 500;
+        }
+
+        .user-type-badge {
+            background-color: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Layout */
+        .main-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 256px;
+            background-color: white;
+            border-right: 1px solid #e9ecef;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-nav {
+            padding: 16px;
+        }
+
+        .nav-button {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-button.active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .nav-button.logout {
+            color: #dc3545;
+            margin-top: 16px;
+        }
+
+        .nav-button.logout:hover {
+            background-color: #f8d7da;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert.hidden {
+            display: none;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        /* Notifications */
+        .notifications-header {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 12px;
+            background-color: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .notification-content {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .notification-remove {
+            background: none;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .notification-remove:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .no-notifications {
+            text-align: center;
+            padding: 32px;
+            color: #6c757d;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+
+        .btn-outline:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #6c757d;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        /* Monitoring Section */
+        .monitoring-section {
+            margin-top: 24px;
+        }
+
+        .monitoring-inputs {
+            display: none;
+            margin-top: 16px;
+        }
+
+        .monitoring-inputs.show {
+            display: block;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                padding: 16px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/>
+                </svg>
+            </div>
+            <h1 class="system-title">Shobji Vander</h1>
+        </div>
+        <div class="header-right">
+            <div class="farmer-info">
+                <div class="farmer-id">Farmer ID: F001</div>
+                <div class="farmer-name">John Smith</div>
+            </div>
+            <div class="user-type-badge">Farmer</div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <button class="nav-button active" onclick="setActiveSection('pre-harvest')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z"/>
+                    </svg>
+                    Pre Harvest Info
+                </button>
+                <button class="nav-button" onclick="setActiveSection('harvest')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21,17H7V15L9.5,12.5C10.86,11.14 10.86,8.86 9.5,7.5C8.14,6.14 5.86,6.14 4.5,7.5L3,9H1L4.5,5.5C6.64,3.36 10.36,3.36 12.5,5.5C14.64,7.64 14.64,11.36 12.5,13.5L10,16H21V17Z"/>
+                    </svg>
+                    Harvest Info
+                </button>
+                <button class="nav-button logout" onclick="handleLogout()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+                    </svg>
+                    Logout
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Alert -->
+            <div id="alert" class="alert hidden">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                </svg>
+                <span id="alert-message"></span>
+            </div>
+
+            <!-- Notifications -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="notifications-header">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.19 14,4.29 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"/>
+                        </svg>
+                        Notifications (<span id="notification-count">0</span>)
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div id="notifications-container">
+                        <div class="no-notifications">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.5; margin-bottom: 8px;">
+                                <path d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.19 14,4.29 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"/>
+                            </svg>
+                            <p>No notifications at this time</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pre-Harvest Section -->
+            <div id="pre-harvest-section" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z"/>
+                            </svg>
+                            Pre Harvest Information
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <!-- New Crops Button -->
+                        <div style="margin-bottom: 24px;">
+                            <button class="btn btn-primary" onclick="openNewCropModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                                </svg>
+                                New Crops
+                            </button>
+                        </div>
+
+                        <!-- Active Crops Table -->
+                        <div style="margin-bottom: 32px;">
+                            <div class="section-header">
+                                <h3 class="section-title">Active Crops (<span id="active-crops-count">0</span>)</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Crop ID</th>
+                                            <th>Seed Type</th>
+                                            <th>Sowing Date</th>
+                                            <th>Expected Harvest Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="active-crops-table">
+                                        <tr>
+                                            <td colspan="4" class="empty-state">No active crops. Add your first crop to get started.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Monitoring Crops -->
+                        <div class="monitoring-section">
+                            <button class="btn btn-outline" onclick="toggleMonitoringInputs()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
+                                </svg>
+                                Monitoring Crops
+                            </button>
+
+                            <div id="monitoring-inputs" class="monitoring-inputs">
+                                <div class="card" style="margin-top: 16px;">
+                                    <div class="card-content">
+                                        <h4 style="margin-bottom: 16px; font-weight: 600;">Crop Monitoring Input</h4>
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label class="form-label">Crops ID</label>
+                                                <select id="monitoring-crop-id" class="form-select">
+                                                    <option value="">Select crop ID</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Fertilizer Name</label>
+                                                <input type="text" id="fertilizer-name" class="form-input" placeholder="Enter fertilizer name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Fertilizer Quantity</label>
+                                                <input type="text" id="fertilizer-quantity" class="form-input" placeholder="Enter quantity">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Pesticide Name</label>
+                                                <input type="text" id="pesticide-name" class="form-input" placeholder="Enter pesticide name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Pesticide Quantity (kg)</label>
+                                                <input type="text" id="pesticide-quantity" class="form-input" placeholder="Enter quantity in kg">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Using Date</label>
+                                                <input type="date" id="using-date" class="form-input">
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 12px; margin-top: 24px;">
+                                            <button class="btn btn-primary" onclick="submitMonitoring()">Submit</button>
+                                            <button class="btn btn-outline" onclick="toggleMonitoringInputs()">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Monitoring Records -->
+                        <div id="monitoring-records-section" style="margin-top: 32px; display: none;">
+                            <div class="section-header">
+                                <h3 class="section-title">Monitoring Records (<span id="monitoring-records-count">0</span>)</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Record ID</th>
+                                            <th>Crop ID</th>
+                                            <th>Fertilizer</th>
+                                            <th>Pesticide</th>
+                                            <th>Date Used</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="monitoring-records-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Harvest Section -->
+            <div id="harvest-section" class="section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M21,17H7V15L9.5,12.5C10.86,11.14 10.86,8.86 9.5,7.5C8.14,6.14 5.86,6.14 4.5,7.5L3,9H1L4.5,5.5C6.64,3.36 10.36,3.36 12.5,5.5C14.64,7.64 14.64,11.36 12.5,13.5L10,16H21V17Z"/>
+                            </svg>
+                            Harvest Information
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <!-- Harvest Info Form -->
+                        <div class="card" style="margin-bottom: 32px;">
+                            <div class="card-content">
+                                <h3 style="margin-bottom: 16px; font-weight: 600;">Harvest Info</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Crops ID</label>
+                                        <select id="harvest-crop-id" class="form-select">
+                                            <option value="">Select crop ID</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Storage Requirement (Temperature in °F)</label>
+                                        <input type="number" id="storage-temp" class="form-input" placeholder="Enter temperature in Fahrenheit">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Shelf Life (in days)</label>
+                                        <input type="number" id="shelf-life" class="form-input" placeholder="Enter shelf life in days">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Packaging Type</label>
+                                        <select id="packaging-type" class="form-select">
+                                            <option value="">Select packaging type</option>
+                                            <option value="plastic bag">Plastic Bag</option>
+                                            <option value="paper bag">Paper Bag</option>
+                                            <option value="carat">Carat</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Type</label>
+                                        <select id="crop-type" class="form-select">
+                                            <option value="">Select type</option>
+                                            <option value="perishable">Perishable</option>
+                                            <option value="non-perishable">Non-Perishable</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Season</label>
+                                        <select id="season" class="form-select">
+                                            <option value="">Select season</option>
+                                            <option value="aus">Aus</option>
+                                            <option value="aman">Aman</option>
+                                            <option value="boro">Boro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                                    <button class="btn btn-primary" onclick="submitHarvest()">Submit Harvest Info</button>
+                                    <button class="btn btn-outline" onclick="clearHarvestForm()">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Harvest Records Table -->
+                        <div>
+                            <div class="section-header">
+                                <h3 class="section-title">Harvest Records (<span id="harvest-records-count">0</span>)</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Seed Type</th>
+                                            <th>Crop ID</th>
+                                            <th>Batch ID</th>
+                                            <th>Sowing Date</th>
+                                            <th>Harvest Date</th>
+                                            <th>Requirement Temperature (°F)</th>
+                                            <th>Shelf Life</th>
+                                            <th>Packing Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="harvest-records-table">
+                                        <tr>
+                                            <td colspan="8" class="empty-state">No harvest records yet. Submit harvest information to see records here.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Crop Modal -->
+    <div id="new-crop-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Crop</h3>
+                <button class="modal-close" onclick="closeNewCropModal()">&times;</button>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label class="form-label">Seed Type</label>
+                    <input type="text" id="new-seed-type" class="form-input" placeholder="Enter seed type">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sowing Date</label>
+                    <input type="date" id="new-sowing-date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Expected Harvest Date</label>
+                    <input type="date" id="new-harvest-date" class="form-input">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="addNewCrop()">Add Crop</button>
+                    <button class="btn btn-outline" onclick="closeNewCropModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let activeSection = 'pre-harvest';
+        let crops = [
+            {
+                id: 'C001',
+                seedType: 'Basmati Rice',
+                sowingDate: '2024-01-15',
+                expectedHarvestDate: '2024-05-15'
+            },
+            {
+                id: 'C002',
+                seedType: 'Wheat',
+                sowingDate: '2024-02-01',
+                expectedHarvestDate: '2024-06-01'
+            },
+            {
+                id: 'C003',
+                seedType: 'Potato',
+                sowingDate: '2024-01-20',
+                expectedHarvestDate: '2024-04-20'
+            },
+            {
+                id: 'C004',
+                seedType: 'Tomato',
+                sowingDate: '2024-02-10',
+                expectedHarvestDate: '2024-05-10'
+            }
+        ];
+
+        let notifications = [
+            {
+                id: 'N001',
+                cropId: 'C001',
+                expectedFertilizingDate: '2024-01-22',
+                message: 'Expected fertilizing date: 2024-01-22'
+            },
+            {
+                id: 'N002',
+                cropId: 'C002',
+                expectedFertilizingDate: '2024-02-08',
+                message: 'Expected fertilizing date: 2024-02-08'
+            },
+            {
+                id: 'N003',
+                cropId: 'C004',
+                expectedFertilizingDate: '2024-02-17',
+                message: 'Expected fertilizing date: 2024-02-17'
+            }
+        ];
+
+        let monitoringRecords = [
+            {
+                id: 'M001',
+                cropsId: 'C001',
+                fartName: 'NPK Fertilizer',
+                fartQuantity: '25kg',
+                pesticideName: 'Organic Neem',
+                pesticideQuantity: '5',
+                usingDate: '2024-01-22',
+                createdAt: '2024-01-22T10:30:00.000Z'
+            },
+            {
+                id: 'M002',
+                cropsId: 'C002',
+                fartName: 'Urea',
+                fartQuantity: '30kg',
+                pesticideName: 'Cypermethrin',
+                pesticideQuantity: '3',
+                usingDate: '2024-02-08',
+                createdAt: '2024-02-08T14:15:00.000Z'
+            },
+            {
+                id: 'M003',
+                cropsId: 'C003',
+                fartName: 'Compost',
+                fartQuantity: '50kg',
+                pesticideName: 'Bordeaux Mixture',
+                pesticideQuantity: '8',
+                usingDate: '2024-01-27',
+                createdAt: '2024-01-27T09:45:00.000Z'
+            }
+        ];
+
+        let harvestRecords = [
+            {
+                cropId: 'C003',
+                batchId: 'B001',
+                seedType: 'Potato',
+                sowingDate: '2024-01-20',
+                harvestDate: '2024-04-20',
+                storageRequirement: '45',
+                shelfLife: '180',
+                packagingType: 'carat',
+                type: 'perishable',
+                season: 'boro'
+            },
+            {
+                cropId: 'C001',
+                batchId: 'B002',
+                seedType: 'Basmati Rice',
+                sowingDate: '2024-01-15',
+                harvestDate: '2024-05-15',
+                storageRequirement: '68',
+                shelfLife: '365',
+                packagingType: 'plastic bag',
+                type: 'non-perishable',
+                season: 'aus'
+            }
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            renderAll();
+        });
+
+        // Data persistence
+        function saveData() {
+            localStorage.setItem('farmer-crops', JSON.stringify(crops));
+            localStorage.setItem('farmer-notifications', JSON.stringify(notifications));
+            localStorage.setItem('farmer-monitoring', JSON.stringify(monitoringRecords));
+            localStorage.setItem('farmer-harvest', JSON.stringify(harvestRecords));
+        }
+
+        function loadData() {
+            try {
+                crops = JSON.parse(localStorage.getItem('farmer-crops')) || crops;
+                notifications = JSON.parse(localStorage.getItem('farmer-notifications')) || notifications;
+                monitoringRecords = JSON.parse(localStorage.getItem('farmer-monitoring')) || monitoringRecords;
+                harvestRecords = JSON.parse(localStorage.getItem('farmer-harvest')) || harvestRecords;
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Alert system
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            const alertMessage = document.getElementById('alert-message');
+            
+            alert.className = `alert ${type}`;
+            alertMessage.textContent = message;
+            
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Navigation
+        function setActiveSection(section) {
+            activeSection = section;
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide sections
+            document.getElementById('pre-harvest-section').style.display = section === 'pre-harvest' ? 'block' : 'none';
+            document.getElementById('harvest-section').style.display = section === 'harvest' ? 'block' : 'none';
+            
+            renderAll();
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/';
+            }
+        }
+
+        // Render functions
+        function renderAll() {
+            renderNotifications();
+            renderActiveCrops();
+            renderMonitoringRecords();
+            renderHarvestRecords();
+            updateCropSelects();
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notifications-container');
+            const count = document.getElementById('notification-count');
+            
+            count.textContent = notifications.length;
+            
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="no-notifications">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.5; margin-bottom: 8px;">
+                            <path d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.19 14,4.29 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"/>
+                        </svg>
+                        <p>No notifications at this time</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = notifications.map(notification => `
+                    <div class="notification-item">
+                        <div class="notification-content">
+                            <strong>Crop ID: ${notification.cropId}</strong> - ${notification.message}
+                        </div>
+                        <button class="notification-remove" onclick="removeNotification('${notification.id}')">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                            </svg>
+                            Remove
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderActiveCrops() {
+            const tbody = document.getElementById('active-crops-table');
+            const count = document.getElementById('active-crops-count');
+            
+            count.textContent = crops.length;
+            
+            if (crops.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No active crops. Add your first crop to get started.</td></tr>';
+            } else {
+                tbody.innerHTML = crops.map(crop => `
+                    <tr>
+                        <td style="font-weight: 500;">${crop.id}</td>
+                        <td>${crop.seedType}</td>
+                        <td>${crop.sowingDate}</td>
+                        <td>${crop.expectedHarvestDate}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function renderMonitoringRecords() {
+            const tbody = document.getElementById('monitoring-records-table');
+            const count = document.getElementById('monitoring-records-count');
+            const section = document.getElementById('monitoring-records-section');
+            
+            count.textContent = monitoringRecords.length;
+            section.style.display = monitoringRecords.length > 0 ? 'block' : 'none';
+            
+            tbody.innerHTML = monitoringRecords.map(record => `
+                <tr>
+                    <td style="font-weight: 500;">${record.id}</td>
+                    <td>${record.cropsId}</td>
+                    <td>${record.fartName} (${record.fartQuantity})</td>
+                    <td>${record.pesticideName} (${record.pesticideQuantity}kg)</td>
+                    <td>${record.usingDate}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderHarvestRecords() {
+            const tbody = document.getElementById('harvest-records-table');
+            const count = document.getElementById('harvest-records-count');
+            
+            count.textContent = harvestRecords.length;
+            
+            if (harvestRecords.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No harvest records yet. Submit harvest information to see records here.</td></tr>';
+            } else {
+                tbody.innerHTML = harvestRecords.map(record => `
+                    <tr>
+                        <td>${record.seedType}</td>
+                        <td style="font-weight: 500;">${record.cropId}</td>
+                        <td>${record.batchId}</td>
+                        <td>${record.sowingDate}</td>
+                        <td>${record.harvestDate}</td>
+                        <td>${record.storageRequirement}°F</td>
+                        <td>${record.shelfLife} days</td>
+                        <td style="text-transform: capitalize;">${record.packagingType}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function updateCropSelects() {
+            const monitoringSelect = document.getElementById('monitoring-crop-id');
+            const harvestSelect = document.getElementById('harvest-crop-id');
+            
+            const options = crops.map(crop => 
+                `<option value="${crop.id}">${crop.id} - ${crop.seedType}</option>`
+            ).join('');
+            
+            monitoringSelect.innerHTML = '<option value="">Select crop ID</option>' + options;
+            harvestSelect.innerHTML = '<option value="">Select crop ID</option>' + options;
+        }
+
+        // Notification functions
+        function removeNotification(notificationId) {
+            notifications = notifications.filter(n => n.id !== notificationId);
+            saveData();
+            renderNotifications();
+            showAlert('Notification removed successfully', 'success');
+        }
+
+        // New crop modal functions
+        function openNewCropModal() {
+            document.getElementById('new-crop-modal').classList.add('show');
+        }
+
+        function closeNewCropModal() {
+            document.getElementById('new-crop-modal').classList.remove('show');
+            clearNewCropForm();
+        }
+
+        function clearNewCropForm() {
+            document.getElementById('new-seed-type').value = '';
+            document.getElementById('new-sowing-date').value = '';
+            document.getElementById('new-harvest-date').value = '';
+        }
+
+        function addNewCrop() {
+            const seedType = document.getElementById('new-seed-type').value.trim();
+            const sowingDate = document.getElementById('new-sowing-date').value;
+            const harvestDate = document.getElementById('new-harvest-date').value;
+            
+            // Validation
+            if (!seedType) {
+                showAlert('Seed type is required', 'error');
+                return;
+            }
+            if (!sowingDate) {
+                showAlert('Sowing date is required', 'error');
+                return;
+            }
+            if (!harvestDate) {
+                showAlert('Expected harvest date is required', 'error');
+                return;
+            }
+            if (new Date(harvestDate) <= new Date(sowingDate)) {
+                showAlert('Expected harvest date must be after sowing date', 'error');
+                return;
+            }
+            
+            // Add new crop
+            const newCrop = {
+                id: `C${String(crops.length + 1).padStart(3, '0')}`,
+                seedType,
+                sowingDate,
+                expectedHarvestDate: harvestDate
+            };
+            
+            crops.push(newCrop);
+            
+            // Generate fertilizing notification (7 days after sowing)
+            const sowingDateObj = new Date(sowingDate);
+            const fertilizingDate = new Date(sowingDateObj);
+            fertilizingDate.setDate(fertilizingDate.getDate() + 7);
+            
+            const newNotification = {
+                id: `N${String(notifications.length + 1).padStart(3, '0')}`,
+                cropId: newCrop.id,
+                expectedFertilizingDate: fertilizingDate.toISOString().split('T')[0],
+                message: `Expected fertilizing date: ${fertilizingDate.toISOString().split('T')[0]}`
+            };
+            
+            notifications.push(newNotification);
+            
+            saveData();
+            renderAll();
+            closeNewCropModal();
+            showAlert(`New crop ${newCrop.id} added successfully`, 'success');
+        }
+
+        // Monitoring functions
+        function toggleMonitoringInputs() {
+            const inputs = document.getElementById('monitoring-inputs');
+            inputs.classList.toggle('show');
+            
+            if (!inputs.classList.contains('show')) {
+                clearMonitoringForm();
+            }
+        }
+
+        function clearMonitoringForm() {
+            document.getElementById('monitoring-crop-id').value = '';
+            document.getElementById('fertilizer-name').value = '';
+            document.getElementById('fertilizer-quantity').value = '';
+            document.getElementById('pesticide-name').value = '';
+            document.getElementById('pesticide-quantity').value = '';
+            document.getElementById('using-date').value = '';
+        }
+
+        function submitMonitoring() {
+            const cropsId = document.getElementById('monitoring-crop-id').value;
+            const fartName = document.getElementById('fertilizer-name').value.trim();
+            const fartQuantity = document.getElementById('fertilizer-quantity').value.trim();
+            const pesticideName = document.getElementById('pesticide-name').value.trim();
+            const pesticideQuantity = document.getElementById('pesticide-quantity').value.trim();
+            const usingDate = document.getElementById('using-date').value;
+            
+            // Validation
+            if (!cropsId) {
+                showAlert('Crop ID is required', 'error');
+                return;
+            }
+            if (!fartName) {
+                showAlert('Fertilizer name is required', 'error');
+                return;
+            }
+            if (!fartQuantity) {
+                showAlert('Fertilizer quantity is required', 'error');
+                return;
+            }
+            if (!pesticideName) {
+                showAlert('Pesticide name is required', 'error');
+                return;
+            }
+            if (!pesticideQuantity) {
+                showAlert('Pesticide quantity is required', 'error');
+                return;
+            }
+            if (!usingDate) {
+                showAlert('Using date is required', 'error');
+                return;
+            }
+            
+            // Add monitoring record
+            const newRecord = {
+                id: `M${String(monitoringRecords.length + 1).padStart(3, '0')}`,
+                cropsId,
+                fartName,
+                fartQuantity,
+                pesticideName,
+                pesticideQuantity,
+                usingDate,
+                createdAt: new Date().toISOString()
+            };
+            
+            monitoringRecords.push(newRecord);
+            saveData();
+            renderMonitoringRecords();
+            toggleMonitoringInputs();
+            showAlert('Monitoring data recorded successfully', 'success');
+        }
+
+        // Harvest functions
+        function clearHarvestForm() {
+            document.getElementById('harvest-crop-id').value = '';
+            document.getElementById('storage-temp').value = '';
+            document.getElementById('shelf-life').value = '';
+            document.getElementById('packaging-type').value = '';
+            document.getElementById('crop-type').value = '';
+            document.getElementById('season').value = '';
+        }
+
+        function submitHarvest() {
+            const cropId = document.getElementById('harvest-crop-id').value;
+            const storageTemp = document.getElementById('storage-temp').value.trim();
+            const shelfLife = document.getElementById('shelf-life').value.trim();
+            const packagingType = document.getElementById('packaging-type').value;
+            const cropType = document.getElementById('crop-type').value;
+            const season = document.getElementById('season').value;
+            
+            // Validation
+            if (!cropId) {
+                showAlert('Crop ID is required', 'error');
+                return;
+            }
+            if (!storageTemp) {
+                showAlert('Storage requirement is required', 'error');
+                return;
+            }
+            if (!shelfLife) {
+                showAlert('Shelf life is required', 'error');
+                return;
+            }
+            if (!packagingType) {
+                showAlert('Packaging type is required', 'error');
+                return;
+            }
+            if (!cropType) {
+                showAlert('Type is required', 'error');
+                return;
+            }
+            if (!season) {
+                showAlert('Season is required', 'error');
+                return;
+            }
+            
+            const storageTempNum = parseFloat(storageTemp);
+            if (isNaN(storageTempNum) || storageTempNum < -50 || storageTempNum > 150) {
+                showAlert('Storage temperature must be between -50°F and 150°F', 'error');
+                return;
+            }
+            
+            const shelfLifeNum = parseInt(shelfLife);
+            if (isNaN(shelfLifeNum) || shelfLifeNum < 1 || shelfLifeNum > 365) {
+                showAlert('Shelf life must be between 1 and 365 days', 'error');
+                return;
+            }
+            
+            // Find selected crop
+            const selectedCrop = crops.find(crop => crop.id === cropId);
+            if (!selectedCrop) {
+                showAlert('Selected crop not found', 'error');
+                return;
+            }
+            
+            // Add harvest record
+            const newRecord = {
+                cropId,
+                batchId: `B${String(harvestRecords.length + 1).padStart(3, '0')}`,
+                seedType: selectedCrop.seedType,
+                sowingDate: selectedCrop.sowingDate,
+                harvestDate: new Date().toISOString().split('T')[0],
+                storageRequirement: storageTemp,
+                shelfLife,
+                packagingType,
+                type: cropType,
+                season
+            };
+            
+            harvestRecords.push(newRecord);
+            saveData();
+            renderHarvestRecords();
+            clearHarvestForm();
+            showAlert(`Harvest record ${newRecord.batchId} created successfully`, 'success');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('new-crop-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNewCropModal();
+            }
+        });
+    </script>
+</body>
+</html>
