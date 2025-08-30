@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shobji Vander - Warehouse Manager Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fffe;
+            color: #2d3748;
+        }
+
+        .header {
+            /* Updated header to use soft green gradient instead of purple */
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #38a169;
+            font-size: 1.2rem;
+        }
+
+        .system-name {
+            /* Updated typography hierarchy with better font weights */
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .user-type {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 250px;
+            /* Updated sidebar to use soft white background with gray borders */
+            background: white;
+            color: #4a5568;
+            padding: 2rem 0;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-button {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            /* Updated sidebar button colors to use gray tones */
+            color: #4a5568;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 0;
+        }
+
+        .sidebar-button:hover {
+            /* Updated hover state to use soft green background */
+            background-color: #f0fff4;
+            color: #38a169;
+        }
+
+        .sidebar-button.active {
+            /* Updated active state to use green accent */
+            background-color: #38a169;
+            color: white;
+        }
+
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            /* Updated content background to soft green tint */
+            background-color: #f8fffe;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .table-container {
+            background: white;
+            /* Updated border radius for more modern look */
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            /* Added subtle border */
+            border: 1px solid #e2e8f0;
+        }
+
+        .table-header {
+            /* Updated table header to use soft gray background */
+            background: #f7fafc;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            /* Updated font weight for better hierarchy */
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            /* Updated border radius for rounded corners */
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            /* Updated primary button to use green color */
+            background-color: #38a169;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            /* Updated hover state with subtle color change */
+            background-color: #2f855a;
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background-color: #38a169;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #2f855a;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            /* Updated danger button to use red accent color */
+            background-color: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c53030;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            /* Updated warning button to use orange accent color */
+            background-color: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #dd6b20;
+            transform: translateY(-1px);
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            /* Updated search input styling with blue accent and rounded corners */
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            width: 200px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            /* Added blue focus state for search inputs */
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            /* Updated border color to use gray tones */
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            /* Updated table header styling */
+            background-color: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            /* Updated row hover to use soft green tint */
+            background-color: #f0fff4;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            /* Updated modal border radius */
+            border-radius: 12px;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+            /* Added border to modal */
+            border: 1px solid #e2e8f0;
+        }
+
+        .close {
+            /* Updated close button color */
+            color: #a0aec0;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #2d3748;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            /* Updated label color */
+            color: #2d3748;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            /* Updated input styling with rounded corners and better borders */
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            /* Added focus state for form inputs */
+            outline: none;
+            border-color: #38a169;
+            box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
+        }
+
+        .tables-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .table-half {
+            flex: 1;
+        }
+
+        .request-section {
+            display: none;
+            background: white;
+            padding: 2rem;
+            /* Updated request section styling */
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-top: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .request-section.active {
+            display: block;
+        }
+
+        .send-request-btn {
+            /* Updated send request button to use green theme */
+            background-color: #38a169;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .send-request-btn:hover {
+            background-color: #2f855a;
+            transform: translateY(-1px);
+        }
+
+        /* Added new styles for better typography hierarchy */
+        h3 {
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">SV</div>
+            <div class="system-name">Shobji Vander</div>
+        </div>
+        <div class="user-info">
+            <div class="user-name">John Smith</div>
+            <div class="user-type">Warehouse Manager</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <button class="sidebar-button active" onclick="showSection('storage-condition')">Storage Condition Update</button>
+            <button class="sidebar-button" onclick="showSection('request-to-factory')">Request to Factory</button>
+            <button class="sidebar-button" onclick="showSection('request-from-factory')">Request from Factory</button>
+            <button class="sidebar-button" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Storage Condition Update Section -->
+            <div id="storage-condition" class="content-section active">
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">Storage Conditions</div>
+                        <div class="table-controls">
+                            <button class="btn btn-primary" onclick="openAddModal('storage')">Add</button>
+                            <input type="text" class="search-input" placeholder="Search..." onkeyup="searchTable('storageTable', this.value)">
+                        </div>
+                    </div>
+                    <table id="storageTable">
+                        <thead>
+                            <tr>
+                                <th>Warehouse ID</th>
+                                <th>Temperature</th>
+                                <th>Humidity</th>
+                                <th>Max Capacity</th>
+                                <th>Occupied Space</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>WH001</td>
+                                <td>22°C</td>
+                                <td>45%</td>
+                                <td>1000 kg</td>
+                                <td>750 kg</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="editRow('storage', this)">Edit</button>
+                                    <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>WH002</td>
+                                <td>18°C</td>
+                                <td>50%</td>
+                                <td>1500 kg</td>
+                                <td>1200 kg</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="editRow('storage', this)">Edit</button>
+                                    <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Request to Factory Section -->
+            <div id="request-to-factory" class="content-section">
+                <div class="tables-row">
+                    <!-- FIFO Table -->
+                    <div class="table-half">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <div class="table-title">FIFO Table</div>
+                                <div class="table-controls">
+                                    <button class="btn btn-primary" onclick="openAddModal('fifo')">Add</button>
+                                    <input type="text" class="search-input" placeholder="Search..." onkeyup="searchTable('fifoTable', this.value)">
+                                </div>
+                            </div>
+                            <table id="fifoTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Batch Number</th>
+                                        <th>Entry Date</th>
+                                        <th>Quantity (kg)</th>
+                                        <th>Days in Storage</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>P001</td>
+                                        <td>Rice</td>
+                                        <td>B001</td>
+                                        <td>2024-01-15</td>
+                                        <td>500</td>
+                                        <td>30</td>
+                                        <td>
+                                            <button class="btn btn-warning" onclick="editRow('fifo', this)">Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- FEFO Table -->
+                    <div class="table-half">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <div class="table-title">FEFO Table</div>
+                                <div class="table-controls">
+                                    <button class="btn btn-primary" onclick="openAddModal('fefo')">Add</button>
+                                    <input type="text" class="search-input" placeholder="Search..." onkeyup="searchTable('fefoTable', this.value)">
+                                </div>
+                            </div>
+                            <table id="fefoTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Batch Number</th>
+                                        <th>Expiry Date</th>
+                                        <th>Quantity (kg)</th>
+                                        <th>Days to Expiry</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>P002</td>
+                                        <td>Wheat</td>
+                                        <td>B002</td>
+                                        <td>2024-06-15</td>
+                                        <td>300</td>
+                                        <td>45</td>
+                                        <td>
+                                            <button class="btn btn-warning" onclick="editRow('fefo', this)">Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Stock Level Table -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">Total Stock Level</div>
+                        <div class="table-controls">
+                            <button class="btn btn-primary" onclick="openAddModal('stock')">Add</button>
+                            <input type="text" class="search-input" placeholder="Search..." onkeyup="searchTable('stockTable', this.value)">
+                        </div>
+                    </div>
+                    <table id="stockTable">
+                        <thead>
+                            <tr>
+                                <th>Batch Number</th>
+                                <th>Product Name</th>
+                                <th>Total Stock Level (kg)</th>
+                                <th>Max Capacity (kg)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B001</td>
+                                <td>Rice</td>
+                                <td>500</td>
+                                <td>1000</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="editRow('stock', this)">Edit</button>
+                                    <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Send Request Button -->
+                <button class="send-request-btn" onclick="toggleRequestSection()">Send Request</button>
+
+                <!-- Request Input Section -->
+                <div id="requestSection" class="request-section">
+                    <h3>Send Request to Factory</h3>
+                    <div class="form-group">
+                        <label for="factoryId">Factory ID:</label>
+                        <input type="text" id="factoryId" placeholder="Enter Factory ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="cropId">Crop ID:</label>
+                        <input type="text" id="cropId" placeholder="Enter Crop ID">
+                    </div>
+                    <button class="btn btn-success" onclick="submitRequest()">Submit</button>
+                </div>
+            </div>
+
+            <!-- Request from Factory Section -->
+            <div id="request-from-factory" class="content-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">Requests from Factory</div>
+                    </div>
+                    <table id="requestsTable">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Name</th>
+                                <th>Quantity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>P003</td>
+                                <td>Corn</td>
+                                <td>200 kg</td>
+                                <td>
+                                    <button class="btn btn-success" onclick="acceptRequest(this)">Accept</button>
+                                    <button class="btn btn-danger" onclick="denyRequest(this)">Deny</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P004</td>
+                                <td>Barley</td>
+                                <td>150 kg</td>
+                                <td>
+                                    <button class="btn btn-success" onclick="acceptRequest(this)">Accept</button>
+                                    <button class="btn btn-danger" onclick="denyRequest(this)">Deny</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add/Edit Item</h2>
+            <form id="modalForm">
+                <div id="modalFields"></div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentEditRow = null;
+        let currentTableType = null;
+
+        // Show different sections
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update sidebar buttons
+            const buttons = document.querySelectorAll('.sidebar-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Search functionality
+        function searchTable(tableId, searchTerm) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length - 1; j++) {
+                    if (cells[j].textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                row.style.display = found ? '' : 'none';
+            }
+        }
+
+        // Modal functions
+        function openAddModal(tableType) {
+            currentTableType = tableType;
+            currentEditRow = null;
+            document.getElementById('modalTitle').textContent = 'Add New Item';
+            generateModalFields(tableType);
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function editRow(tableType, button) {
+            currentTableType = tableType;
+            currentEditRow = button.closest('tr');
+            document.getElementById('modalTitle').textContent = 'Edit Item';
+            generateModalFields(tableType, currentEditRow);
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('modalForm').reset();
+        }
+
+        function generateModalFields(tableType, editRow = null) {
+            const fieldsContainer = document.getElementById('modalFields');
+            fieldsContainer.innerHTML = '';
+
+            let fields = [];
+
+            switch (tableType) {
+                case 'storage':
+                    fields = ['Warehouse ID', 'Temperature', 'Humidity', 'Max Capacity', 'Occupied Space'];
+                    break;
+                case 'fifo':
+                    fields = ['Product ID', 'Product Name', 'Batch Number', 'Entry Date', 'Quantity (kg)', 'Days in Storage'];
+                    break;
+                case 'fefo':
+                    fields = ['Product ID', 'Product Name', 'Batch Number', 'Expiry Date', 'Quantity (kg)', 'Days to Expiry'];
+                    break;
+                case 'stock':
+                    fields = ['Batch Number', 'Product Name', 'Total Stock Level (kg)', 'Max Capacity (kg)'];
+                    break;
+            }
+
+            fields.forEach((field, index) => {
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+
+                const label = document.createElement('label');
+                label.textContent = field + ':';
+                
+                const input = document.createElement('input');
+                input.type = field.includes('Date') ? 'date' : 'text';
+                input.name = field.toLowerCase().replace(/[^a-z0-9]/g, '');
+                input.required = true;
+
+                if (editRow) {
+                    input.value = editRow.cells[index].textContent;
+                }
+
+                formGroup.appendChild(label);
+                formGroup.appendChild(input);
+                fieldsContainer.appendChild(formGroup);
+            });
+        }
+
+        // Form submission
+        document.getElementById('modalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const values = Array.from(formData.values());
+
+            if (currentEditRow) {
+                // Update existing row
+                values.forEach((value, index) => {
+                    currentEditRow.cells[index].textContent = value;
+                });
+            } else {
+                // Add new row
+                const tableId = getTableId(currentTableType);
+                const table = document.getElementById(tableId);
+                const tbody = table.getElementsByTagName('tbody')[0];
+                
+                const newRow = tbody.insertRow();
+                values.forEach(value => {
+                    const cell = newRow.insertCell();
+                    cell.textContent = value;
+                });
+
+                // Add actions cell
+                const actionsCell = newRow.insertCell();
+                if (currentTableType === 'requests') {
+                    actionsCell.innerHTML = `
+                        <button class="btn btn-success" onclick="acceptRequest(this)">Accept</button>
+                        <button class="btn btn-danger" onclick="denyRequest(this)">Deny</button>
+                    `;
+                } else {
+                    actionsCell.innerHTML = `
+                        <button class="btn btn-warning" onclick="editRow('${currentTableType}', this)">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>
+                    `;
+                }
+            }
+
+            closeModal();
+        });
+
+        function getTableId(tableType) {
+            switch (tableType) {
+                case 'storage': return 'storageTable';
+                case 'fifo': return 'fifoTable';
+                case 'fefo': return 'fefoTable';
+                case 'stock': return 'stockTable';
+                case 'requests': return 'requestsTable';
+                default: return '';
+            }
+        }
+
+        // Delete row
+        function deleteRow(button) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                button.closest('tr').remove();
+            }
+        }
+
+        // Request functions
+        function acceptRequest(button) {
+            alert('Request accepted!');
+            button.closest('tr').remove();
+        }
+
+        function denyRequest(button) {
+            alert('Request denied!');
+            button.closest('tr').remove();
+        }
+
+        // Toggle request section
+        function toggleRequestSection() {
+            const section = document.getElementById('requestSection');
+            section.classList.toggle('active');
+        }
+
+        // Submit request
+        function submitRequest() {
+            const factoryId = document.getElementById('factoryId').value;
+            const cropId = document.getElementById('cropId').value;
+
+            if (factoryId && cropId) {
+                alert(`Request sent to Factory ID: ${factoryId} for Crop ID: ${cropId}`);
+                document.getElementById('factoryId').value = '';
+                document.getElementById('cropId').value = '';
+                document.getElementById('requestSection').classList.remove('active');
+            } else {
+                alert('Please fill in both Factory ID and Crop ID');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logging out...');
+                // Redirect to home page
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
