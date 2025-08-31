@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriStak - Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.pexels.com/photos/17546505/pexels-photo-17546505.jpeg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .register-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .register-container h2 {
+            margin-bottom: 30px;
+            color: #28a745; /* Green for registration */
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .register-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .register-button:hover {
+            background-color: #218838;
+        }
+        .back-to-login {
+            margin-top: 20px;
+            display: block;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-to-login:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2><big>Register for AgriStak</big></h2>
+        <form action="login.html" method="get"> <!-- After registration, redirects to login page -->
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="contactNumber">Contact Number (11 digits):</label>
+                <input type="tel" id="contactNumber" name="contactNumber" pattern="[0-9]{11}" maxlength="11" required>
+            </div>
+            <div class="form-group">
+                <label for="userType">User Type:</label>
+                <select id="userType" name="userType" required>
+                    <option value="">Select User Type</option>
+                    <option value="farmer">Farmer</option>
+                    <option value="inventory_manager">Inventory Manager</option>
+                    <option value="warehouse_owner">Warehouse Manager</option>
+                    <option value="factory_manager">Factory Manager</option>
+                    <option value="customer">Customer</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="password">Create Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="retypePassword">Re-type Password:</label>
+                <input type="password" id="retypePassword" name="retypePassword" required>
+            </div>
+            <button type="submit" class="register-button">Register</button>
+        </form>
+        <p style="margin-top: 15px; font-size: 0.9em; color: #555;">
+            Note: In a real system, a confirmation pop-up would appear here.
+            Since this is pure HTML, it will redirect directly to the login page.
+        </p>
+        <a href="login.html" class="back-to-login">Already have an account.</a>
+    </div>
+</body>
+</html>
