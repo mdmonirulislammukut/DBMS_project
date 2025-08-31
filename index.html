@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriStak - Inventory Management System</title>
+    <style>
+        body {
+            background:url("https://images.pexels.com/photos/29379715/pexels-photo-29379715.jpeg");
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0; /* Light Cyan - vibrant base */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+             /* Green gradient */
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .nav {
+            text-align: right;
+            padding: 15px 20px;
+            background:linear-gradient(to right,#8BC34A,#2196F3); /* Blue */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+        .nav a:hover {
+            color: #BBDEFB; /* Lighter blue on hover */
+        }
+        .container {
+            background: linear-gradient(to bottom right, rgba(171, 207, 88, 0.00), rgba(255, 236, 179, 0.00)),
+            url(''); /* Replace with actual image path or URL */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 60px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex-grow: 1;
+            padding: 40px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.95); /* More opaque white */
+            margin: 20px auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            /* Amber border for vibrancy */
+        }
+        .hero-section h2 {
+            color: #E91E63; /* Pink */
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: #f3c600;
+        }
+        .buttons {
+            margin-top: 30px;
+        }
+        .buttons .button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 0 15px;
+            border-radius: 30px; /* Pill shape */
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .buttons .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .buttons .login-button {
+            background-color: #8e30db; /* Deep Orange */
+            color: white;
+        }
+        .buttons .login-button:hover {
+            background-color: #8e30db;
+        }
+        .buttons .register-button {
+            background-color:#28a745; /* Cyan */
+            color: white;
+        }
+        .buttons .register-button:hover {
+            background-color: #28a745;
+        }
+        .features-section h2 {
+            color: #673AB7; /* Deep Purple */
+            font-size: 2.5em;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .feature-item {
+            background: linear-gradient(to bottom right, #FFFDE7, #FFECB3); /* Light yellow gradient */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #FFD54F; /* Amber light border */
+        }
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+        }
+        .feature-item img {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        .feature-item strong {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            color: #3F51B5; /* Indigo */
+            text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+        }
+        .feature-item p {
+            font-size: 1em;
+            color: #666;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: auto;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><big>AgriStak</big></h1>
+    </div>
+    <div class="nav">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+    </div>
+
+    <div class="container">
+        <section class="hero-section" id="about">
+            <h2>Revolutionize Your Inventory with AgriStak!</h2>
+            <p><big>AgriStak is the cutting-edge solution designed to bring unparalleled efficiency and clarity to your entire supply chain. From the moment a seed is planted to the final product reaching your customer, we provide real-time insights, smart automation, and robust control. Say goodbye to guesswork and hello to optimized operations and boosted profits!</big></p>
+            <div class="buttons">
+                <a href="login.html" class="button login-button">Login now</a>
+                <a href="register.html" class="button register-button">Join AgriStak</a>
+            </div>
+        </section>
+
+        <section class="features-section" id="features">
+            <h2>Discover Our Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <img src="https://images.pexels.com/photos/29798199/pexels-photo-29798199.jpeg" alt="Crop Tracking">
+                    <strong>End-to-End Crop Tracking</strong>
+                    <p>Monitor your agricultural assets with precision, from cultivation to harvest.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://images.pexels.com/photos/1393382/pexels-photo-1393382.jpeg" alt="Product Data">
+                    <strong>Detailed Product Data Management</strong>
+                    <p>Comprehensive data for every product, ensuring accuracy and traceability.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://images.pexels.com/photos/5114780/pexels-photo-5114780.jpeg" alt="Harvest Monitoring">
+                    <strong>Smart Harvest Monitoring</strong>
+                    <p>Leverage intelligent insights to optimize harvest timing and yield.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://images.pexels.com/photos/26763121/pexels-photo-26763121.jpeg" alt="Perishable Control">
+                    <strong>Perishable Product Control</strong>
+                    <p>Advanced tools to manage and minimize waste for sensitive goods.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://images.pexels.com/photos/33303307/pexels-photo-33303307.jpeg" alt="Agricultural Input">
+                    <strong>Agricultural Input Inventory</strong>
+                    <p>Efficiently track and manage all your farm inputs, from seeds to machinery.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://images.pexels.com/photos/5156696/pexels-photo-5156696.jpeg" alt="Multi-Location">
+                    <strong>Multi-Location Stock Management</strong>
+                    <p>Seamlessly oversee inventory across all your warehouses and distribution points.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 AgriStak. All rights reserved. Powering the future of inventory.</p>
+    </div>
+</body>
+</html>
+

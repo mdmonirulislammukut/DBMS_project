@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriStak - Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('https://images.pexels.com/photos/19460854/pexels-photo-19460854.jpeg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: hsl(273, 25%, 14%);
+    }
+
+    .login-container {
+      background-color: rgba(201, 229, 131, 0.8);
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      margin-bottom: 30px;
+      color: hsl(274, 26%, 45%);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="password"],
+    .form-group select {
+      width: calc(100% - 20px);
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 12px;
+      background-color: hsl(274, 26%, 45%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .login-button:hover {
+      background-color: #0056b3;
+    }
+
+    .links {
+      margin-top: 20px;
+    }
+
+    .links a {
+      display: block;
+      margin-top: 10px;
+      color: hsl(274, 26%, 45%);
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Popup Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 30px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .close {
+      color: #aaa;
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .confirmation-text {
+      color: green;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login to AgriStak</h2>
+    <form action="index.html" method="get">
+      <div class="form-group">
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" name="userId" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="userType">User Type:</label>
+        <select id="userType" name="userType" required>
+          <option value="">Select User Type</option>
+          <option value="farmer">Farmer</option>
+          <option value="inventory_manager">Inventory Manager</option>
+          <option value="warehouse_owner">Warehouse Manager</option>
+          <option value="factory_manager">Factory Manager</option>
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="login-button">Login</button>
+    </form>
+    <div class="links">
+      <a href="register.html">Create Account</a>
+      <a onclick="openModal()">Forgot Password?</a>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3>Forgot Password</h3>
+      <div class="form-group">
+        <label for="forgotUsername">User Name:</label>
+        <input type="text" id="forgotUsername" required>
+      </div>
+      <div class="form-group">
+        <label for="forgotPhone">Phone Number:</label>
+        <input type="text" id="forgotPhone" required>
+      </div>
+      <div class="form-group">
+        <label for="forgotEmail">Email:</label>
+        <input type="text" id="forgotEmail" required>
+      </div>
+      <button onclick="submitForgot()" class="login-button">Submit</button>
+      <p id="confirmationText" class="confirmation-text" style="display:none;">Check your mail for User name & Password</p>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function openModal() {
+      document.getElementById("forgotModal").style.display = "block";
+      document.getElementById("confirmationText").style.display = "none";
+    }
+
+    function closeModal() {
+      document.getElementById("forgotModal").style.display = "none";
+    }
+
+    function submitForgot() {
+      const username = document.getElementById("forgotUsername").value;
+      const phone = document.getElementById("forgotPhone").value;
+      const email = document.getElementById("forgotEmail").value;
+
+      if (username && phone && email) {
+        const confirmation = document.getElementById("confirmationText");
+        confirmation.style.display = "block";
+
+        setTimeout(() => {
+          closeModal();
+          window.location.href = "login.html";
+        }, 3000); // Show message briefly then redirect
+      } else {
+        alert("Please fill in all fields.");
+      }
+    }
+
+    // Close modal if user clicks outside content
+    window.onclick = function(event) {
+      const modal = document.getElementById("forgotModal");
+      if (event.target == modal) {
+        closeModal();
+      }
+    };
+  </script>
+</body>
+</html>
